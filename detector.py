@@ -53,8 +53,8 @@ class Detector:
                     classColor = [int(c) for c in self.colorList[classLabelID]]
                     displayText = '{}:{:.2f}'.format(classLabel,classConfidence)
                     x, y, w, h = bbox
-                    cv2.rectangle(image, (x, y), (x + w, y + h), color=classColor, thickness=1)
-                    cv2.putText(image,displayText,(x,y-10), cv2.FONT_HERSHEY_PLAIN, 1, classColor,2)
+                    cv2.rectangle(image, (x, y), (x + w, y + h), color=classColor, thickness=2)
+                    cv2.putText(image,displayText,(x,y-10), cv2.FONT_HERSHEY_PLAIN, 2, classColor,2)
 
             cv2.imshow("Result", image)
 
