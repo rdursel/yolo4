@@ -28,23 +28,6 @@ class Detector:
         self.colorList = np.random.uniform(low=0, high=255, size=(len(self.classesList),3))
         print(self.classesList)
 
-    def get_centers(x, y, w, h):
-        centerX = (w + x) / 2
-        centerY = (h + y) / 2
-        return centerX, centerY
-    
-    def is_circle_inside_rectangle(circle, rectangle):
-        circle_x, circle_y, circle_radius = circle
-        rect_x1, rect_y1, rect_x2, rect_y2 = rectangle
-        
-        if (circle_x - circle_radius >= rect_x1) and \
-        (circle_x + circle_radius <= rect_x2) and \
-        (circle_y - circle_radius >= rect_y1) and \
-        (circle_y + circle_radius <= rect_y2):
-            return True
-        return False
-
-
 
     def onVideo(self):
 
@@ -73,10 +56,9 @@ class Detector:
         half_side = 50 // 2
         top_left = (centroid[0] - half_side, centroid[1] - half_side)
         bottom_right = (centroid[0] + half_side, centroid[1] + half_side)
-        print(top_left, bottom_right)
 
         while success:
-            classLabelIDs, confidences, bboxs = self.net.detect(image,confThreshold=0.5)
+            classLabelIDs, confidences, bboxs = self.net.detect(image,confThreshold=0.7)
 
             bboxs=list(bboxs)
             #print(bboxs)
@@ -87,6 +69,7 @@ class Detector:
             
             #cv2.circle(image, (320, 220), 7, (255, 255, 255), -1) #where w//2, h//2 are the required frame/image centeroid's XYcoordinates.
             cv2.rectangle(image, top_left, bottom_right, (255, 0, 0), 1)
+            shoot = 0
 
             if len(bboxsIdx) !=0:
                 for i in range(0, len(bboxsIdx)):
@@ -101,7 +84,10 @@ class Detector:
                     cv2.circle(image, (int(x+w//2), int(y+h//2) ), 7, (255, 0, 0), -1)
                     cv2.putText(image,displayText,(x,y-10), cv2.FONT_HERSHEY_PLAIN, 1, classColor,2)
                     if(is_circle_inside_rectangle((int(x+w//2), int(y+h//2) , 7),(*top_left,*bottom_right))):
-                       print("Yeahhh !!!")
+                       shoot=shoot+1
+                       if shoot>=1:
+                            cv2.rectangle(image, top_left, bottom_right, (255, 0, 255), -1)
+                            cv2.putText(image, "SHOOOT !", (200, 100), cv2.FONT_HERSHEY_PLAIN, 3, (0, 0,255), 3)        
 
             cv2.imshow("Result", image)
 
