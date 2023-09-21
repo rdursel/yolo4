@@ -46,7 +46,7 @@ class Detector:
             confidences=list(map(float,confidences))
 
             bboxsIdx = cv2.dnn.NMSBoxes(bboxs,confidences, score_threshold=0.5, nms_threshold=0.2)
-
+            
             if len(bboxsIdx) !=0:
                 for i in range(0, len(bboxsIdx)):
                     bbox = bboxs[np.squeeze(bboxsIdx[i])]
@@ -57,12 +57,15 @@ class Detector:
                     displayText = '{}:{:.2f}'.format(classLabel,classConfidence)
                     x, y, w, h = bbox
                     cv2.rectangle(image, (x, y), (x + w, y + h), color=classColor, thickness=1)
+                    cv2.circle(image, (x//2, y//2), 7, (255, 0, 0), -1)
                     cv2.putText(image,displayText,(x,y-10), cv2.FONT_HERSHEY_PLAIN, 1, classColor,2)
+                    
 
             cv2.imshow("Result", image)
 
             key = cv2.waitKey(1) & 0xFF
             if key == ord("q"):
                 break
+
             (success, image) = cap.read()
         cv2.destroyAllWindows()
